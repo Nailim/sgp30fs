@@ -1,4 +1,4 @@
-# bme680fs
+# sgp30fs
 A Plan9 (9p) file system for sgp30 environmental sensor on the I2C bus.
 
 ## about
