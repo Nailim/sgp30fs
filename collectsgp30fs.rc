@@ -1,0 +1,57 @@
+#!/bin/rc
+
+
+# add to cron to periodicly collet data
+# exsample (if installed in bin/rc) coleect data every 5 minutes)
+# 0,5,10,15,20,25,30,35,40,45,55 * * * * local collectsgp30fs.rc
+
+
+# set file retention history in seconds (0 for unlimited)
+fh=604800
+
+
+#rfork
+
+# log file location
+lf=/sys/log/sgp30
+
+# human readable date format (no whitespace)
+hdf=YYYY.MM.DD-hh:mm:ss
+
+# create file with data headder to describe values
+if (! test -r $lf.header){
+	echo 'timestamp datetime co2e(ppm) tvoc(ppm) raw_h2(units) raw_ethanol(units)' \
+	| awk '{print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6}' >>$lf.header
+}
+
+# only run if sensor is accesible
+if (test -r /srv/sgp30) {
+
+	# mount sensor if not mounted
+	if (test ! -r /mnt/sgp30/all) {
+		mount -b /srv/sgp30 /mnt
+	}
+
+	# if mounted collect data and save
+	if (test -r /mnt/sgp30/all) {
+		# read sensor data
+		bmeraw=`{cat /mnt/sgp30/all}
+		#echo $bmeraw >>/sys/log/sgp30
+
+		mdate=`{date -n}
+		hdate=`{date -f $hdf $mdate}
+		echo $mdate $hdate $bmeraw | awk '{print $1"\t"$2"\t"$4"\t"$6"\t"$8"\t"$10}' >>$lf
+	}
+}
+
+# prune older data if set
+if (test $fh -gt 0) {
+	temp=/tmp/sgp30-$pid
+	
+	dn=`{date -n}
+	cod=`{echo $dn - $fh | bc}
+
+	cat /sys/log/sgp30 | awk -v 'cod='$cod -v 'dn='$dn '{if ($1 > cod) print $0;}' > $temp
+
+	mv $temp $lf
+}

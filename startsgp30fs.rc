@@ -1,0 +1,9 @@
+#!/bin/rc
+
+rfork
+
+if (! test -r /srv/sgp30) {
+	# if sgp30fs is not running, run it - change for your system
+	#/usr/glenda/data/projects/sgp30fs/sgp30fs
+	/usr/glenda/data/projects/sgp30fs/sgp30fs -d &
+}

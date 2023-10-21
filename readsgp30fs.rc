@@ -1,0 +1,17 @@
+#!/bin/rc
+
+
+# only run if sensor is accesible
+if (test -r /srv/sgp30) {
+
+	# mount sensor if not mounted
+	if (test ! -r /mnt/sgp30/all) {
+		mount -b /srv/sgp30 /mnt
+	}
+
+	# if mounted collect data and save
+	if (test -r /mnt/sgp30/all) {
+		# read sensors
+		cat /mnt/sgp30/all
+	}
+}

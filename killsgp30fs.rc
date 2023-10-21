@@ -1,0 +1,14 @@
+#!/bin/rc
+
+unmount /srv/sgp30 /mnt
+
+kc=`{ps | grep sgp30fs | awk '{print $2}' | wc -l | awk '{print $1}'}
+
+while(test $kc -gt 0) {
+    kpidlist=`{ps | grep sgp30fs | awk '{print $2}'}
+    kpid=`{echo $kpidlist | awk '{print $1}'}
+
+    echo kill > /proc/$kpid/ctl
+
+    kc=`{echo print $kc - 1 | bc}
+}
