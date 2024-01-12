@@ -680,12 +680,12 @@ openi2cdev(void)
 	i2cfd = -1;
 
 	/* default location of sgp30 device is 0x58*/
-	if (access("/dev/i2c.58.data", 0) != 0) {
+	if (access("/dev/i2c1/i2c.58.data", 0) != 0) {
 		if (bind("#J58", "/dev", MBEFORE) < 0) {
 		    sysfatal("no J58 device");
         }
     }
-	i2cfd = open("/dev/i2c.58.data", ORDWR);
+	i2cfd = open("/dev/i2c1/i2c.58.data", ORDWR);
 	if (i2cfd < 0) {
 		sysfatal("cannot open i2c.58.data file");
     }
@@ -747,12 +747,12 @@ openi2cdevmain(void)
 	i2cfdmain = -1;
 
 	/* default location of sgp30 device is 0x58*/
-	if (access("/dev/i2c.58.data", 0) != 0) {
+	if (access("/dev/i2c1/i2c.58.data", 0) != 0) {
 		if (bind("#J58", "/dev", MBEFORE) < 0) {
 		    sysfatal("no J58 device in main thread");
         }
     }
-	i2cfdmain = open("/dev/i2c.58.data", ORDWR);
+	i2cfdmain = open("/dev/i2c1/i2c.58.data", ORDWR);
 	if (i2cfdmain < 0) {
 		sysfatal("cannot open i2c.58.data file in main thread");
     }
